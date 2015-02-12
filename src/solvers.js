@@ -52,12 +52,19 @@ window.countNRooksSolutions = function(n) {
   var board = new Board ({'n' : n});
   var max = board.get('n');
   var recurse = function (game){
-    console.log('started recursion');
-    console.log(game.hasAnyColConflicts());
+    // console.log('started recursion');
+    // console.log(game.hasAnyColConflicts());
     //return;
+    //get last row see if there's something in there;
+    var full = false
+    console.log('last row ' + game.get(max-1));
+      var lastRow = game.get(max-1);
+      console.log(_.reduce(lastRow, function (a, b){return a + b;}));
+      full = _.reduce(lastRow, function (a, b){return a + b;}) > 0;
+
     //see if the game is complete
     //check for any conflicts
-    if(!game.hasAnyColConflicts() && !game.hasAnyRowConflicts()){
+    if(!game.hasAnyColConflicts() && !game.hasAnyRowConflicts() && full){
       //calculate total game pieces.
       var sum = 0;
       console.log('testing solution');
@@ -68,6 +75,7 @@ window.countNRooksSolutions = function(n) {
         }
 
       }
+      console.log(sum);
       //if we have enough game pieces push to solutions.
       if (sum===max){
         console.log("solution found");
@@ -77,22 +85,19 @@ window.countNRooksSolutions = function(n) {
     } else {
       return;
     }
-    console.log('before for loops');
+    //console.log('before for loops');
     for (var i=0; i < max; i++) {
-      console.log('first for loop');
-      for (var j = 0; j < max; j++){
-        console.log('second for loop');
-        game.togglePiece(i, j); // toggle(0, 0);
-        //if (!game.hasAnyColConflicts && !game.hasAnyRowConflicts){
-          //game.togglePiece(j,i);
-          //test = game.get(j);
-          if (j === max-1 && i === max-1){
-            return;
+      // console.log('first for loop');
+      //check row for game piece.
+      if (_.reduce(game.get(i), function (a, b){return a + b;}) === 0){
+        for (var j = 0; j < max; j++){
+          // console.log('second for loop');
+          game.togglePiece(j, i);
+          if(!game.hasAnyColConflicts() && !game.hasAnyRowConflicts()){
+            return recurse(game);
           }
-          return recurse(game);
-          //recurse(board);
-        //}
-        game.togglePiece(i, j);
+          game.togglePiece(j, i);
+        }
       }
     }
 
