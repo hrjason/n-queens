@@ -142,7 +142,7 @@
       var sum = 0;
       for(var i=0; i < max; i++){
         var row = this.get(i);
-        if(row[mdc + i]===1){
+        if(row[mdc + i] === 1){
           sum += row[mdc +i];
         }
       }
