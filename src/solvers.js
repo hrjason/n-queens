@@ -54,35 +54,35 @@ window.countNRooksSolutions = function(n) {
   var recurse = function (game){
     //console.log(game);
     if(!game.hasAnyColConflicts && !game.hasAnyRowConflicts){
-      var total = _.flatten(game);
-      var count = 0;
-      for (var k = 0; k< total.length; k++){
-        count +=total[k];
+      var sum = 0;
+      for (var m=0; m< max; m++){
+        gameRow =game.get(m);
+        for(var p=0; p< max; p++){
+          sum +=gameRow[p];
+        }
+
       }
-      if (count === max){
+      if (sum===max){
         solution.push(game);
         return;
       }
     }
     for (var i=0; i < max; i++) {
       for (var j = 0; j < max; j++){
-        game[j][i]=1; // toggle(0, 0);
+        game.togglePiece; // toggle(0, 0);
         if (!game.hasAnyColConflicts && !game.hasAnyRowConflicts){
           //game.togglePiece(j,i);
           //test = game.get(j);
           return recurse(game);
           //recurse(board);
         }
-        game[j][i]=0;
+        game.togglePiece;
       }
     }
 
   };
-  var obj = []
-  for (var m = 0; m < max; m++){
-    obj.push(board.get(m));
-  }
-  recurse(obj);
+
+  recurse(board);
   //console.log("recursion runs" + counter);
   //console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solution.length;
