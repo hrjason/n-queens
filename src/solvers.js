@@ -52,9 +52,15 @@ window.countNRooksSolutions = function(n) {
   var board = new Board ({'n' : n});
   var max = board.get('n');
   var recurse = function (game){
-    //console.log(game);
-    if(!game.hasAnyColConflicts && !game.hasAnyRowConflicts){
+    console.log('started recursion');
+    console.log(game.hasAnyColConflicts());
+    //return;
+    //see if the game is complete
+    //check for any conflicts
+    if(!game.hasAnyColConflicts() && !game.hasAnyRowConflicts()){
+      //calculate total game pieces.
       var sum = 0;
+      console.log('testing solution');
       for (var m=0; m< max; m++){
         gameRow =game.get(m);
         for(var p=0; p< max; p++){
@@ -62,21 +68,31 @@ window.countNRooksSolutions = function(n) {
         }
 
       }
+      //if we have enough game pieces push to solutions.
       if (sum===max){
+        console.log("solution found");
         solution.push(game);
         return;
       }
+    } else {
+      return;
     }
+    console.log('before for loops');
     for (var i=0; i < max; i++) {
+      console.log('first for loop');
       for (var j = 0; j < max; j++){
-        game.togglePiece; // toggle(0, 0);
-        if (!game.hasAnyColConflicts && !game.hasAnyRowConflicts){
+        console.log('second for loop');
+        game.togglePiece(i, j); // toggle(0, 0);
+        //if (!game.hasAnyColConflicts && !game.hasAnyRowConflicts){
           //game.togglePiece(j,i);
           //test = game.get(j);
+          if (j === max-1 && i === max-1){
+            return;
+          }
           return recurse(game);
           //recurse(board);
-        }
-        game.togglePiece;
+        //}
+        game.togglePiece(i, j);
       }
     }
 
