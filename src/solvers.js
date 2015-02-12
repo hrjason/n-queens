@@ -26,56 +26,66 @@ window.findNRooksSolution = function(n) {
   var board = new Board ({'n' : n});
   var max = board.get('n');
   var recurse = function (game){
-    var results = _.flatten(game);
-    var sum = 0;
-    for(var i=0; i < results; i++) {
-      sum += results[i];
-    };
-    if(sum === max){
+    if (game.length===max){
       solution.push(game);
+      return;
     }
-    //first row is finished
-    for (var j=0; j < max; j++){
-      var row = game.get(j);
-      for(var i=0; i<max; i++) {
-        if(!game.hasRowConflictAt(j)) {
-          if(!game.hasColConflictAt(i)){
-            row[i] = 1;
-            recurse(game);
-          }
-        }
-      }
-    }
-    /*
     for (var i = 0; i < max; i++){
-      var row = board.get(i);
-      for (var j =0; j< max; j++){
-        if(!board.hasRowConflictAt(i) && !board.hasColConflictAt(j)){
-          //console.log(row[j]);
-          row[j]=1;
-          solution.push(row);
-        }
+      if (!this.hasAnyRooksConflicts){
+        board.togglePiece(i,i);
+        test = board.get(i);
+        recurse(game.concat(test));
       }
     }
-    */
+
   };
-  recurse(board);
-  // for(var i =0; i < max; i++){
-  //   var row = board.get(i);
-  //   row[i] = 1;
-  //   solution.push(row);
-  // }
+  recurse([]);
   return solution;
+
 };
 
 
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
 window.countNRooksSolutions = function(n) {
-  var solutionCount = undefined; //fixme
+  var solution = [];
+  var board = new Board ({'n' : n});
+  var max = board.get('n');
+  var recurse = function (game){
+    //console.log(game);
+    if(!game.hasAnyColConflicts && !game.hasAnyRowConflicts){
+      var total = _.flatten(game);
+      var count = 0;
+      for (var k = 0; k< total.length; k++){
+        count +=total[k];
+      }
+      if (count === max){
+        solution.push(game);
+        return;
+      }
+    }
+    for (var i=0; i < max; i++) {
+      for (var j = 0; j < max; j++){
+        game[j][i]=1; // toggle(0, 0);
+        if (!game.hasAnyColConflicts && !game.hasAnyRowConflicts){
+          //game.togglePiece(j,i);
+          //test = game.get(j);
+          return recurse(game);
+          //recurse(board);
+        }
+        game[j][i]=0;
+      }
+    }
 
-  console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
-  return solutionCount;
+  };
+  var obj = []
+  for (var m = 0; m < max; m++){
+    obj.push(board.get(m));
+  }
+  recurse(obj);
+  //console.log("recursion runs" + counter);
+  //console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
+  return solution.length;
 };
 
 ////////////////////
