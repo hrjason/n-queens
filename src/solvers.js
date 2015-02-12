@@ -25,11 +25,46 @@ window.findNRooksSolution = function(n) {
   var solution = [];
   var board = new Board ({'n' : n});
   var max = board.get('n');
-  for(var i =0; i < max; i++){
-    var row = board.get(i);
-    row[i] = 1;
-    solution.push(row);
-  }
+  var recurse = function (game){
+    var results = _.flatten(game);
+    var sum = 0;
+    for(var i=0; i < results; i++) {
+      sum += results[i];
+    };
+    if(sum === max){
+      solution.push(game);
+    }
+    //first row is finished
+    for (var j=0; j < max; j++){
+      var row = game.get(j);
+      for(var i=0; i<max; i++) {
+        if(!game.hasRowConflictAt(j)) {
+          if(!game.hasColConflictAt(i)){
+            row[i] = 1;
+            recurse(game);
+          }
+        }
+      }
+    }
+    /*
+    for (var i = 0; i < max; i++){
+      var row = board.get(i);
+      for (var j =0; j< max; j++){
+        if(!board.hasRowConflictAt(i) && !board.hasColConflictAt(j)){
+          //console.log(row[j]);
+          row[j]=1;
+          solution.push(row);
+        }
+      }
+    }
+    */
+  };
+  recurse(board);
+  // for(var i =0; i < max; i++){
+  //   var row = board.get(i);
+  //   row[i] = 1;
+  //   solution.push(row);
+  // }
   return solution;
 };
 
